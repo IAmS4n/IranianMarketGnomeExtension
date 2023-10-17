@@ -1,0 +1,8 @@
+{
+  "name": "IranianMarkets",
+  "description": "A gnome extensions to show important price for Iranian in one click.",
+  "uuid": "IranianMarkets@ehsan",
+  "url":"https://github.com/IAmS4n/IranianMarketGnomeExtension/",
+  "shell-version": ["42"],
+  "version" : 1.0
+}
