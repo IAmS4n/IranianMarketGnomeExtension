@@ -103,7 +103,7 @@ async function main() {
 
   Promise.all([getBonbastData(), getUSDTPrice(), getBTCPrice()])
     .then((results) => {
-      const [usdPrice, usdtPrice, btcPrice] = results;
+      let [usdPrice, usdtPrice, btcPrice] = results;
       if (!usdPrice) { usdPrice = " ? "; }
       if (!usdtPrice) { usdtPrice = " ? "; }
       if (!btcPrice) { btcPrice = " ? "; }
