@@ -8,7 +8,7 @@ const Main = imports.ui.main;
 const Tweener = imports.tweener.tweener;
 let text, button;
 
-function hidePrompt() {
+async function hidePrompt() {
   Main.uiGroup.remove_actor(text);
   text = null;
 }
@@ -77,15 +77,15 @@ async function getUSDTPrice() {
 }
 
 // Returns price of BTC in USD.
-async function getBTCPrice() {
+async function getCryptoPrice(crypto) {
   try {
     // console.log("Call getBTCPrice");
     let session = new Soup.Session();
     session.timeout = 10000;
-    const message = Soup.Message.new('GET', "https://api.coinbase.com/v2/prices/BTC-USD/spot");
+    const message = Soup.Message.new('GET', `https://api.coinbase.com/v2/prices/${crypto}-USD/spot`);
     const result = await session.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null);
     const jsonData = JSON.parse(result.get_data().toString());
-    return jsonData.data.amount;
+    return parseFloat(jsonData.data.amount).toFixed(2);
   } catch (e) {
     return null;
   }
@@ -96,18 +96,20 @@ async function main() {
   // console.log(usdPrice)
   // let usdtPrice = await getUSDTPrice();
   // console.log(usdtPrice)
-  // let btcPrice = await getBTCPrice();
+  // let btcPrice = await getCryptoPrice("BTC");
   // console.log(btcPrice)
   // let res = `USD : ${usdPrice}T\nUSDT : ${usdtPrice}T\nBTC : \$${btcPrice}`;
   // showResult(res);
 
-  Promise.all([getBonbastData(), getUSDTPrice(), getBTCPrice()])
+  Promise.all([getBonbastData(), getUSDTPrice(), getCryptoPrice("BTC"), getCryptoPrice("ETH"), getCryptoPrice("BNB")])
     .then((results) => {
-      let [usdPrice, usdtPrice, btcPrice] = results;
+      let [usdPrice, usdtPrice, btcPrice, ethPrice, bnbPrice] = results;
       if (!usdPrice) { usdPrice = " ? "; }
       if (!usdtPrice) { usdtPrice = " ? "; }
       if (!btcPrice) { btcPrice = " ? "; }
-      let res = `USD : ${usdPrice}T\nUSDT : ${usdtPrice}T\nBTC : \$${btcPrice}`;
+      if (!ethPrice) { ethPrice = " ? "; }
+      if (!bnbPrice) { bnbPrice = " ? "; }
+      let res = `USD : ${usdPrice}T\nUSDT : ${usdtPrice}T\nBTC : \$${btcPrice}\nETH : \$${ethPrice}\nBNB : \$${bnbPrice}`;
       // console.log(res);
       showResult(res);
     })
